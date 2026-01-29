@@ -1,0 +1,206 @@
+# Clipboard Brain — Task Execution Workflow for AI Agent
+
+## 1. Purpose of This Document
+
+This document defines:
+
+- How the AI agent must execute every task.
+- Planning rules before coding.
+- Validation rules after coding.
+- Safety and quality gates.
+- Communication format expectations.
+
+The AI agent must strictly follow this workflow for every task.
+
+---
+
+---
+
+## 2. Task Lifecycle Overview
+
+Every task must follow this sequence:
+
+```
+
+1. Understand Task
+2. Validate Against Docs
+3. Design Solution
+4. Implement Code
+5. Self-Review
+6. Run Validation
+7. Deliver Output
+
+```
+
+Skipping any step is forbidden.
+
+---
+
+---
+
+## 3. Step 1 — Understand Task
+
+The agent must:
+
+- Restate the task in its own words.
+- Identify which docs apply.
+- Identify impacted layers (UI, Domain, Infrastructure).
+- Identify risks and unknowns.
+
+If ambiguity exists:
+
+- Ask clarification BEFORE coding.
+
+---
+
+---
+
+## 4. Step 2 — Validate Against Docs
+
+The agent must:
+
+- Check architecture compliance.
+- Check tech stack constraints.
+- Check folder rules.
+- Check state management rules.
+- Check platform channel rules.
+- Check data model rules.
+
+If conflict exists:
+
+- Report conflict.
+- Propose compliant alternative.
+
+---
+
+---
+
+## 5. Step 3 — Design Solution
+
+The agent must:
+
+- Describe component responsibilities.
+- Describe data flow.
+- Identify files to create or modify.
+- Confirm no forbidden dependencies.
+
+Design must be approved before coding when requested.
+
+---
+
+---
+
+## 6. Step 4 — Implement Code
+
+Rules:
+
+- Follow file structure strictly.
+- Follow naming rules.
+- Keep files small and focused.
+- Write documentation comments.
+- Avoid TODOs unless explicitly approved.
+- Implement tests alongside logic.
+
+---
+
+---
+
+## 7. Step 5 — Self-Review Checklist
+
+Before delivering, agent must verify:
+
+- ✅ No architecture violations
+- ✅ No forbidden imports
+- ✅ No unused code
+- ✅ Null safety respected
+- ✅ Error handling present
+- ✅ Naming conventions respected
+- ✅ Files placed correctly
+- ✅ Tests added where required
+
+---
+
+---
+
+## 8. Step 6 — Run Validation
+
+Agent must simulate:
+
+- Compilation sanity check.
+- Lint check.
+- Logical flow correctness.
+- Edge cases.
+
+---
+
+---
+
+## 9. Step 7 — Deliver Output
+
+Output must include:
+
+1. Summary of changes
+2. Files created / modified
+3. Instructions to run or test
+4. Known limitations
+
+---
+
+---
+
+## 10. Communication Rules
+
+- Be concise and precise.
+- Never hallucinate APIs.
+- Never invent dependencies.
+- Always cite which doc rules were followed.
+
+---
+
+---
+
+## 11. Bug Handling Workflow
+
+When bug reported:
+
+1. Reproduce logically.
+2. Identify root cause.
+3. Propose fix.
+4. Validate against docs.
+5. Implement.
+6. Add regression test.
+
+---
+
+---
+
+## 12. Refactoring Rules
+
+Refactoring allowed only when:
+
+- Improves clarity
+- Reduces duplication
+- Maintains behavior
+
+Refactoring must not change public APIs without approval.
+
+---
+
+---
+
+## 13. Forbidden Behavior
+
+❌ Skipping planning  
+❌ Large unreviewed changes  
+❌ Silent breaking changes  
+❌ Random optimizations  
+❌ Ignoring documentation  
+❌ Overengineering
+
+---
+
+---
+
+## 14. Change Policy
+
+Workflow changes require approval.

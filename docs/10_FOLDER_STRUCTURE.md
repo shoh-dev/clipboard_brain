@@ -1,0 +1,283 @@
+# Clipboard Brain — Folder Structure & Ownership Rules
+
+## 1. Purpose of This Document
+
+This document defines:
+
+- What each folder owns.
+- What types of files are allowed per folder.
+- How new features must introduce new folders/files.
+- Structural boundaries that must never be violated.
+
+The AI agent must strictly follow these rules.
+
+---
+
+---
+
+## 2. High-Level Ownership
+
+```
+
+lib/
+├── app/              → App bootstrap, DI wiring, lifecycle
+├── ui/               → Screens + widgets only
+├── domain/           → Business rules + models
+├── infrastructure/   → IO, storage, native, AI, OS
+
+```
+
+Each folder has exclusive responsibility.
+
+No folder may leak responsibility into another.
+
+---
+
+---
+
+## 3. app/
+
+### Purpose
+
+- Application bootstrap.
+- Dependency injection wiring.
+- Global providers.
+- App lifecycle observers.
+
+### Allowed
+
+- App root widget
+- Provider registrations
+- Theme setup
+- Window configuration
+- Global app state
+
+### Forbidden
+
+❌ Business logic  
+❌ UI widgets  
+❌ Platform calls  
+❌ Database access
+
+---
+
+---
+
+## 4. ui/
+
+### Purpose
+
+- Render user interface.
+- Forward user intent to ViewModels.
+
+### Allowed
+
+- Pages (screens)
+- Widgets
+- Layout logic
+- Styling
+- Keyboard shortcuts binding
+
+### Forbidden
+
+❌ Database access  
+❌ Platform channels  
+❌ AI calls  
+❌ Business rules  
+❌ Direct file IO
+
+---
+
+---
+
+## 5. ui/<feature>/
+
+Each feature folder must contain:
+
+```
+
+feature_name/
+├── feature_page.dart
+├── feature_view_model.dart
+└── widgets/
+
+```
+
+Rules:
+
+- No more than one ViewModel per feature.
+- Widgets must be dumb and reusable.
+- No shared logic across features.
+
+---
+
+---
+
+## 6. domain/
+
+### Purpose
+
+- Pure business logic.
+- Models.
+- Rules.
+
+### Allowed
+
+- Entities
+- Value objects
+- Use cases
+- Algorithms
+
+### Forbidden
+
+❌ Flutter imports  
+❌ Platform APIs  
+❌ Persistence  
+❌ Networking  
+❌ Async timers
+
+---
+
+---
+
+## 7. domain/services/
+
+### Purpose
+
+- Use cases and domain orchestration.
+
+Examples:
+
+- ClipboardIndexService
+- SearchService
+- RankingService
+
+Services must:
+
+- Be pure where possible.
+- Receive dependencies via constructor.
+
+---
+
+---
+
+## 8. infrastructure/
+
+### Purpose
+
+- External world interaction.
+
+Subfolders:
+
+```
+
+infrastructure/
+├── clipboard/        → Clipboard repositories
+├── database/         → SQLite, migrations
+├── ai/               → AI service
+├── security/         → Encryption, secrets
+└── native_bridge/    → Platform channels
+
+```
+
+### Rules
+
+- Infrastructure implements interfaces.
+- No UI imports.
+- No widget imports.
+
+---
+
+---
+
+## 9. native_bridge/
+
+### Purpose
+
+- Single boundary for platform channels.
+
+Allowed:
+
+- NativeBridgeService
+- Channel constants
+- DTO mapping
+
+Forbidden:
+❌ Business logic  
+❌ Persistence  
+❌ UI state
+
+---
+
+---
+
+## 10. test/
+
+### Purpose
+
+- Automated tests.
+
+Structure must mirror lib/.
+
+```
+
+test/
+├── domain/
+├── view_models/
+└── infrastructure/
+
+```
+
+---
+
+---
+
+## 11. Adding a New Feature
+
+Steps:
+
+1. Create folder under ui/
+2. Create ViewModel
+3. Define domain service if needed
+4. Implement infrastructure only if IO required
+5. Register providers
+6. Update docs if schema changes
+
+---
+
+---
+
+## 12. File Size Rules
+
+- Files should not exceed ~300 lines.
+- Split logically when exceeded.
+
+---
+
+---
+
+## 13. Naming Rules
+
+- snake_case file names
+- Explicit descriptive names
+- No abbreviations
+
+---
+
+---
+
+## 14. Forbidden Structures
+
+❌ utils/ dumping folder  
+❌ helpers/ dumping folder  
+❌ shared logic inside ui  
+❌ duplicated models  
+❌ circular imports
+
+---
+
+---
+
+## 15. Change Policy
+
+Folder structure changes require approval.

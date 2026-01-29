@@ -1,0 +1,248 @@
+# Clipboard Brain — Technology Stack Specification
+
+## 1. Purpose of This Document
+
+This document defines:
+
+- Approved technologies and versions.
+- Allowed packages.
+- Platform constraints.
+- Native tooling.
+- Forbidden technologies.
+
+The AI agent must strictly follow this document when selecting tools and dependencies.
+
+---
+
+---
+
+## 2. Target Platforms
+
+### Primary Platform (MVP)
+
+- macOS 13+ (Ventura or newer)
+- Apple Silicon + Intel supported
+- Desktop only
+
+### Future (Not MVP)
+
+- Windows
+- Linux
+- Mobile
+
+---
+
+---
+
+## 3. Flutter Environment
+
+### Flutter SDK
+
+- Stable channel only.
+- Latest stable version at project creation.
+- Dart >= 3.x
+
+### Project Type
+
+- Flutter Desktop Application
+- macOS enabled
+
+---
+
+---
+
+## 4. State Management
+
+### Approved
+
+- `provider`
+- `ChangeNotifier`
+- `ValueNotifier`
+
+### Forbidden
+
+- Riverpod
+- Bloc
+- Redux
+- MobX
+- GetX
+- Cubit
+- Signals
+
+---
+
+---
+
+## 5. Navigation
+
+### Approved
+
+- Flutter Navigator 2.0 (Router API) or classic Navigator
+- Simple route-based navigation only
+
+### Forbidden
+
+- go_router
+- auto_route
+- Modular routing
+
+---
+
+---
+
+## 6. Persistence
+
+### Approved
+
+- `sqflite_common_ffi`
+- `path_provider`
+- Local encrypted storage (if feasible)
+
+### Forbidden
+
+- Cloud databases
+- Firebase
+- Remote APIs
+- Sync services
+
+---
+
+---
+
+## 7. Native Integration
+
+### Approved
+
+- Flutter Platform Channels
+- MethodChannel
+- EventChannel
+- Swift (macOS)
+
+### Plugin Strategy
+
+- Custom local plugin inside project.
+- No heavy third-party native plugins unless approved.
+
+---
+
+---
+
+## 8. Clipboard Access
+
+### Approved
+
+- Native macOS clipboard via Swift plugin
+- NSPasteboard APIs
+
+### Forbidden
+
+- Polling clipboard from Dart
+- Third-party clipboard plugins
+
+---
+
+---
+
+## 9. Background Execution
+
+### Approved
+
+- macOS background app behavior via native plugin
+- Menu bar app support
+
+### Notes
+
+- Must follow macOS energy efficiency guidelines.
+- Avoid timers and busy loops.
+
+---
+
+---
+
+## 10. AI / ML
+
+### Primary Option
+
+- `flutter_foundation_models_framework` (if stable and functional)
+- Or direct native Swift integration if needed
+
+### Constraints
+
+- Fully on-device inference.
+- No network usage.
+- Graceful fallback if unavailable.
+
+---
+
+---
+
+## 11. UI Framework
+
+### Approved
+
+- Flutter Material (desktop optimized)
+- Custom widgets allowed
+
+### Forbidden
+
+- Cupertino-only UI
+- WebView-based UI
+
+---
+
+---
+
+## 12. Build Tooling
+
+### Approved
+
+- Flutter CLI
+- Xcode for native debugging
+- VS Code / Android Studio
+
+---
+
+---
+
+## 13. Code Quality
+
+### Required
+
+- Strong typing
+- Null safety
+- Linting enabled
+- Clear naming conventions
+- Small focused files
+- Documentation comments for public APIs
+
+---
+
+---
+
+## 14. Dependency Management Rules
+
+- Every dependency must be justified.
+- Prefer minimal dependencies.
+- Lock versions in pubspec.yaml.
+- Avoid beta packages.
+
+---
+
+---
+
+## 15. Forbidden Technologies
+
+❌ Cloud services  
+❌ Analytics SDKs  
+❌ Ads SDKs  
+❌ Background network services  
+❌ Experimental runtimes  
+❌ Code generation frameworks  
+
+---
+
+---
+
+## 16. Change Policy
+
+Any change to tech stack must be approved explicitly.

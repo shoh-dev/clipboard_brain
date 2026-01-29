@@ -1,0 +1,223 @@
+# Clipboard Brain — UI / UX Guidelines
+
+## 1. Purpose of This Document
+
+This document defines:
+
+- Visual layout rules.
+- User interaction behavior.
+- Navigation patterns.
+- Desktop usability standards.
+- Accessibility expectations.
+
+UI must strictly follow these guidelines.
+
+---
+
+---
+
+## 2. Design Principles
+
+- Desktop-first.
+- Keyboard-first usage.
+- Fast access.
+- Minimal visual noise.
+- Clear information hierarchy.
+- Zero onboarding friction.
+
+---
+
+---
+
+## 3. Window Types
+
+### 3.1 Main Window
+
+Purpose:
+
+- Browse clipboard history.
+- Search.
+- Preview.
+- Manage items.
+
+Layout:
+
+```
+
++------------------------------------------------+
+| Search Bar                                     |
++----------------------+-------------------------+
+| Clipboard List       | Preview Panel           |
+|                      |                         |
+|                      |                         |
+|                      |                         |
++----------------------+-------------------------+
+
+```
+
+Rules:
+
+- List left, preview right.
+- Resizable split view.
+- Infinite scroll or paginated.
+- Keyboard navigation enabled.
+
+---
+
+---
+
+### 3.2 Menu Bar Window
+
+Purpose:
+
+- Fast access popup.
+
+Layout:
+
+```
+
++------------------------+
+
+| Search Input               |
+| -------------------------- |
+| Recent Items List          |
+| +------------------------+ |
+
+```
+
+Rules:
+
+- Lightweight.
+- Fast open (<150ms).
+- Auto-close when focus lost.
+
+---
+
+---
+
+### 3.3 Settings Window
+
+Purpose:
+
+- Configuration.
+
+Layout:
+
+- Simple form sections.
+- Toggle-based.
+
+---
+
+---
+
+## 4. Clipboard Item Row Design
+
+Each item shows:
+
+- Icon (type)
+- Short preview text or thumbnail
+- Timestamp
+- Pin indicator
+- Tags (optional)
+
+---
+
+---
+
+## 5. Preview Panel
+
+Shows:
+
+- Full text
+- Image preview
+- File list
+- AI metadata (tags, summary)
+
+---
+
+---
+
+## 6. Keyboard Shortcuts
+
+Mandatory:
+
+| Action        | Shortcut    |
+| ------------- | ----------- |
+| Open App      | Cmd+Shift+V |
+| Search Focus  | Cmd+F       |
+| Copy Selected | Enter       |
+| Delete        | Backspace   |
+| Pin           | Cmd+P       |
+| Close         | Esc         |
+
+User configurable.
+
+---
+
+---
+
+## 7. Mouse Behavior
+
+- Double click copies item.
+- Right click shows context menu.
+
+---
+
+---
+
+## 8. Visual Style
+
+- Light and dark themes.
+- Neutral color palette.
+- Avoid heavy shadows.
+- Desktop density optimized.
+
+---
+
+---
+
+## 9. Accessibility
+
+- Text scaling support.
+- Keyboard navigation.
+- Screen reader labels.
+- High contrast support.
+
+---
+
+---
+
+## 10. Error UX
+
+- Non-blocking toast notifications.
+- No modal spam.
+- Clear messaging.
+
+---
+
+---
+
+## 11. Loading UX
+
+- Skeleton loaders.
+- Subtle indicators.
+
+---
+
+---
+
+## 12. Forbidden
+
+❌ Mobile-first layouts  
+❌ Animated overload  
+❌ Hidden navigation  
+❌ Gesture-only interactions  
+❌ Blocking dialogs
+
+---
+
+---
+
+## 13. Change Policy
+
+UI changes require approval.
