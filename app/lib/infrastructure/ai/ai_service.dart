@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:foundation_models_framework/foundation_models_framework.dart';
+
 /// AI enrichment result containing generated tags and metadata.
 ///
 /// See Memory 08: AI Integration Specification.
@@ -24,9 +27,6 @@ class AIEnrichmentResult {
 
 /// Service for on-device AI enrichment of clipboard items.
 ///
-/// This is a stub implementation. Real implementation would use
-/// Apple Foundation Models or similar on-device AI.
-///
 /// See Memory 08: AI Integration Specification.
 abstract class AIService {
   /// Enriches clipboard text content with AI-generated metadata.
@@ -36,79 +36,73 @@ abstract class AIService {
   Future<bool> isAvailable();
 }
 
-/// Stub implementation of AIService for development.
-///
-/// Provides basic keyword extraction without actual AI.
-class StubAIService implements AIService {
+/// Implementation of AIService using Apple Foundation Models.
+class FoundationModelsAIService implements AIService {
+  final _fm = FoundationModelsFramework.instance;
+
   @override
-  Future<bool> isAvailable() async => true;
+  Future<bool> isAvailable() async {
+    try {
+      final availability = await _fm.checkAvailability();
+      return availability.isAvailable;
+    } catch (_) {
+      return false;
+    }
+  }
 
   @override
   Future<AIEnrichmentResult> enrichText(String text) async {
-    // Simulate processing delay
-    await Future.delayed(const Duration(milliseconds: 50));
+    // Sanitize and limit input length for safety
+    final sanitizedText = text.length > 2000 ? text.substring(0, 2000) : text;
 
-    final tags = _extractKeywords(text);
-    final language = _detectLanguage(text);
-    final category = _classifyContent(text);
-    final summary = text.length > 200 ? _generateSummary(text) : null;
+    final prompt =
+        """
+Analyze the following clipboard snippet and provide metadata in JSON format.
+Include:
+- tags: Array of up to 5 keywords.
+- summary: A concise one-line summary.
+- language: ISO 639-1 code.
+- category: One of [text, code, url, email, ip_address, list].
 
-    return AIEnrichmentResult(
-      tags: tags,
-      summary: summary,
-      language: language,
-      category: category,
-    );
-  }
+Response MUST be valid JSON only.
 
-  List<String> _extractKeywords(String text) {
-    // Simple keyword extraction: find common patterns
-    final words = text
-        .toLowerCase()
-        .replaceAll(RegExp(r'[^\w\s]'), ' ')
-        .split(RegExp(r'\s+'))
-        .where((w) => w.length > 3)
-        .toSet()
-        .take(5)
-        .toList();
-    return words;
-  }
+Snippet:
+$sanitizedText
+""";
 
-  String _detectLanguage(String text) {
-    // Very basic detection based on character ranges
-    final hasJapanese = RegExp(r'[\u3040-\u309F\u30A0-\u30FF]').hasMatch(text);
-    final hasKorean = RegExp(r'[\uAC00-\uD7AF]').hasMatch(text);
-    final hasChinese = RegExp(r'[\u4E00-\u9FFF]').hasMatch(text);
+    try {
+      final response = await _fm.sendPrompt(
+        prompt,
+        instructions:
+            "You are a metadata extraction tool. Always respond in valid JSON.",
+        options: GenerationOptionsRequest(
+          temperature: 0.1,
+          maximumResponseTokens: 300,
+        ),
+      );
 
-    if (hasJapanese) return 'ja';
-    if (hasKorean) return 'ko';
-    if (hasChinese) return 'zh';
-    return 'en';
-  }
+      if (response.errorMessage != null) {
+        return const AIEnrichmentResult();
+      }
 
-  String _classifyContent(String text) {
-    final lower = text.toLowerCase();
+      // Find JSON block in response
+      final jsonMatch = RegExp(
+        r'\{.*\}',
+        dotAll: true,
+      ).firstMatch(response.content);
+      if (jsonMatch == null) return const AIEnrichmentResult();
 
-    if (RegExp(r'https?://').hasMatch(lower)) return 'url';
-    if (RegExp(r'[\w.]+@[\w.]+\.\w+').hasMatch(lower)) return 'email';
-    if (RegExp(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}').hasMatch(lower)) {
-      return 'ip_address';
+      final data = jsonDecode(jsonMatch.group(0)!);
+
+      return AIEnrichmentResult(
+        tags: (data['tags'] as List?)?.map((e) => e.toString()).toList() ?? [],
+        summary: data['summary']?.toString(),
+        language: data['language']?.toString(),
+        category: data['category']?.toString(),
+      );
+    } catch (e) {
+      // Fallback if AI fails
+      return const AIEnrichmentResult();
     }
-    if (RegExp(
-      r'(function|class|def|const|let|var|import|export)',
-    ).hasMatch(lower)) {
-      return 'code';
-    }
-    if (RegExp(r'^\s*[-*]\s').hasMatch(lower)) return 'list';
-    if (text.split('\n').length > 5) return 'multiline';
-
-    return 'text';
-  }
-
-  String _generateSummary(String text) {
-    // Simple truncation-based summary
-    final firstLine = text.split('\n').first;
-    if (firstLine.length <= 100) return firstLine;
-    return '${firstLine.substring(0, 97)}...';
   }
 }

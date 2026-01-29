@@ -11,6 +11,9 @@ class MainFlutterWindow: NSWindow {
     RegisterGeneratedPlugins(registry: flutterViewController)
     ClipboardBrainPlugin.register(with: flutterViewController.registrar(forPlugin: "ClipboardBrainPlugin"))
 
+    // Setup menu bar status item
+    MenuBarController.shared.setup(with: self)
+
     super.awakeFromNib()
   }
 }

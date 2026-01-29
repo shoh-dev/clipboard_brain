@@ -146,16 +146,55 @@ class _ClipboardItemTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         style: theme.textTheme.bodyMedium,
       ),
-      subtitle: Text(
-        _formatTimestamp(item.createdAt),
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.outline,
-        ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _formatTimestamp(item.createdAt),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.outline,
+            ),
+          ),
+          if (item.category != null || item.tags.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                children: [
+                  if (item.category != null)
+                    _buildAIChip(context, item.category!, Colors.blue),
+                  ...item.tags
+                      .take(2)
+                      .map((tag) => _buildAIChip(context, tag, Colors.grey)),
+                ],
+              ),
+            ),
+        ],
       ),
       trailing: item.isPinned
           ? Icon(Icons.push_pin, size: 16, color: theme.colorScheme.primary)
           : null,
       onTap: onTap,
+    );
+  }
+
+  Widget _buildAIChip(BuildContext context, String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Text(
+        label.toUpperCase(),
+        style: TextStyle(
+          fontSize: 8,
+          fontWeight: FontWeight.bold,
+          color: color.withValues(alpha: 0.8),
+        ),
+      ),
     );
   }
 
@@ -231,20 +270,128 @@ class _PreviewPanel extends StatelessWidget {
           );
         }
 
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _PreviewHeader(item: item, vm: vm),
-              const SizedBox(height: 16),
-              const Divider(),
-              const SizedBox(height: 16),
-              Expanded(child: _PreviewContent(item: item)),
-            ],
-          ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildAIInsights(context, item),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _PreviewHeader(item: item, vm: vm),
+                    const SizedBox(height: 16),
+                    const Divider(),
+                    const SizedBox(height: 16),
+                    Expanded(child: _PreviewContent(item: item)),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
+    );
+  }
+
+  Widget _buildAIInsights(BuildContext context, ClipboardItem item) {
+    final hasAI =
+        item.summary != null ||
+        item.tags.isNotEmpty ||
+        item.language != null ||
+        item.category != null;
+
+    if (!hasAI) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(
+          context,
+        ).colorScheme.primaryContainer.withValues(alpha: 0.1),
+        border: Border(
+          bottom: BorderSide(color: Theme.of(context).dividerColor),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.auto_awesome,
+                size: 14,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'AI INSIGHTS',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.1,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ],
+          ),
+          if (item.summary != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              item.summary!,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+            ),
+          ],
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (item.category != null)
+                _buildInsightChip(
+                  context,
+                  Icons.category_outlined,
+                  'Category: ${item.category}',
+                ),
+              if (item.language != null)
+                _buildInsightChip(
+                  context,
+                  Icons.translate,
+                  'Language: ${item.language!.toUpperCase()}',
+                ),
+              ...item.tags.map(
+                (tag) => _buildInsightChip(context, Icons.tag, tag),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInsightChip(BuildContext context, IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 10, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(fontSize: 10),
+          ),
+        ],
+      ),
     );
   }
 }

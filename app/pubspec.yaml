@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ^3.10.7
+  sdk: ^3.10.1
 
 dependencies:
   flutter:
@@ -14,6 +14,7 @@ dependencies:
   path_provider: ^2.1.2
   uuid: ^4.3.3
   intl: ^0.19.0
+  foundation_models_framework: ^0.2.1
 
 dev_dependencies:
   flutter_test:
