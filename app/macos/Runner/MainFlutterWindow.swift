@@ -9,6 +9,7 @@ class MainFlutterWindow: NSWindow {
     self.setFrame(windowFrame, display: true)
 
     RegisterGeneratedPlugins(registry: flutterViewController)
+    ClipboardBrainPlugin.register(with: flutterViewController.registrar(forPlugin: "ClipboardBrainPlugin"))
 
     super.awakeFromNib()
   }
